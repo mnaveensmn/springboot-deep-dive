@@ -54,4 +54,19 @@ public class EmployeeServiceImpl implements EmployeeService {
         return repository.save(employee);
     }
 
+    @Override
+    public List<Employee> getEmployeeByName(String name) {
+        return repository.findByName(name);
+    }
+
+    @Override
+    public List<Employee> getEmployeesByNameAndLocation(String name, String location) {
+        return repository.findByNameAndLocation(name, location);
+    }
+
+    @Override
+    public List<Employee> getEmployeeByKeyword(String keyword) {
+        return repository.findByNameContaining(keyword);
+    }
+
 }

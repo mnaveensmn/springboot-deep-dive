@@ -14,4 +14,11 @@ public interface EmployeeService {
     void deleteEmployee(Long id);
 
     Employee updateEmployee(Long id, Employee employee);
+
+    List<Employee> getEmployeeByName(String name);
+
+    List<Employee> getEmployeesByNameAndLocation(String name, String location);
+
+    List<Employee> getEmployeeByKeyword(String keyword);
+
 }
