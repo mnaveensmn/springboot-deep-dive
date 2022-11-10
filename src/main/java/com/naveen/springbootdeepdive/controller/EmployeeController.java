@@ -4,6 +4,8 @@ import com.naveen.springbootdeepdive.model.Employee;
 import com.naveen.springbootdeepdive.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -27,38 +29,32 @@ public class EmployeeController {
     }
 
     @GetMapping("/employees")
-    public List<Employee> getEmployees() {
-        return employeeService.getEmployee();
+    public ResponseEntity<List<Employee>> getEmployees() {
+        return new ResponseEntity<>(employeeService.getEmployee(), HttpStatus.OK);
     }
 
     @GetMapping("/employees/{id}")
-    public Employee getEmployee(@PathVariable("id") Long id) {
-        return employeeService.getEmployeeById(id);
+    public ResponseEntity<Employee> getEmployee(@PathVariable("id") Long id) {
+        return new ResponseEntity<>(employeeService.getEmployeeById(id), HttpStatus.OK);
     }
 
     @PostMapping("/employees")
-    public Employee saveEmployee(@Valid @RequestBody Employee employee) {
-        return employeeService.saveEmployee(employee);
+    public ResponseEntity<Employee> saveEmployee(@Valid @RequestBody Employee employee) {
+        return new ResponseEntity<>(employeeService.saveEmployee(employee), HttpStatus.CREATED);
     }
 
     @PutMapping("/employees/{id}")
-    public Employee updateEmployee(@PathVariable("id") Long id, @RequestBody Employee employee) {
-        Employee empToUpdate = employeeService.getEmployeeById(id);
-        empToUpdate.setName(employee.getName() != null ? employee.getName() : empToUpdate.getName());
-        empToUpdate.setAge(employee.getAge() != 0 ? employee.getAge() : empToUpdate.getAge());
-        empToUpdate.setLocation(employee.getLocation() != null ? employee.getLocation() : empToUpdate.getLocation());
-        empToUpdate.setDepartment(employee.getDepartment() != null ? employee.getDepartment() : empToUpdate.getDepartment());
-        empToUpdate.setEmail(employee.getEmail() != null ? employee.getEmail() : empToUpdate.getEmail());
-        return employeeService.updateEmployee(empToUpdate);
+    public ResponseEntity<Employee> updateEmployee(@PathVariable("id") Long id, @RequestBody Employee employee) {
+        return new ResponseEntity<>(employeeService.updateEmployee(id, employee), HttpStatus.OK);
     }
 
     @DeleteMapping("/employees/{id}")
-    public String deleteEmployee(@PathVariable("id") Long id) {
+    public ResponseEntity<HttpStatus> deleteEmployee(@PathVariable("id") Long id) {
         try {
             employeeService.deleteEmployee(id);
-            return "Deleted the employee details for the id " + id;
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
-            return e.getMessage();
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 }

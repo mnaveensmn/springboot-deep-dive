@@ -5,7 +5,6 @@ import com.naveen.springbootdeepdive.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,7 +44,13 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Employee updateEmployee(Employee employee) {
+    public Employee updateEmployee(Long id, Employee employee) {
+        Employee empToUpdate = getEmployeeById(id);
+        empToUpdate.setName(employee.getName() != null ? employee.getName() : empToUpdate.getName());
+        empToUpdate.setAge(employee.getAge() != 0 ? employee.getAge() : empToUpdate.getAge());
+        empToUpdate.setLocation(employee.getLocation() != null ? employee.getLocation() : empToUpdate.getLocation());
+        empToUpdate.setDepartment(employee.getDepartment() != null ? employee.getDepartment() : empToUpdate.getDepartment());
+        empToUpdate.setEmail(employee.getEmail() != null ? employee.getEmail() : empToUpdate.getEmail());
         return repository.save(employee);
     }
 
