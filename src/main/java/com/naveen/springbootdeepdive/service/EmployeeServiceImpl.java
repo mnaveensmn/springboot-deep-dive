@@ -3,6 +3,9 @@ package com.naveen.springbootdeepdive.service;
 import com.naveen.springbootdeepdive.model.Employee;
 import com.naveen.springbootdeepdive.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,8 +18,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     private EmployeeRepository repository;
 
     @Override
-    public List<Employee> getEmployee() {
-        return repository.findAll();
+    public List<Employee> getEmployee(int pageNumber, int pageSize) {
+        Pageable pages = PageRequest.of(pageNumber, pageSize, Sort.Direction.DESC, "id");
+        return repository.findAll(pages).getContent();
     }
 
     @Override
@@ -66,7 +70,19 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public List<Employee> getEmployeeByKeyword(String keyword) {
-        return repository.findByNameContaining(keyword);
+        Sort sort = Sort.by(Sort.Direction.DESC, "id");
+        return repository.findByNameContaining(keyword, sort);
     }
+
+    @Override
+    public List<Employee> getEmployeeByNameOrLocation(String name, String location) {
+        return repository.getEmployeeByNameAndLocation(name, location);
+    }
+
+    @Override
+    public Integer deleteByEmployeeName(String name) {
+        return repository.deleteEmployeeByName(name);
+    }
+
 
 }

@@ -29,8 +29,8 @@ public class EmployeeController {
     }
 
     @GetMapping("/employees")
-    public ResponseEntity<List<Employee>> getEmployees() {
-        return new ResponseEntity<>(employeeService.getEmployee(), HttpStatus.OK);
+    public ResponseEntity<List<Employee>> getEmployees(@RequestParam Integer pageNumber, @RequestParam Integer pageSize) {
+        return new ResponseEntity<>(employeeService.getEmployee(pageNumber, pageSize), HttpStatus.OK);
     }
 
     @GetMapping("/employees/{id}")
@@ -71,6 +71,16 @@ public class EmployeeController {
     @GetMapping("/employees/filterByKeyword")
     public ResponseEntity<List<Employee>> getEmployeeByKeyword(@RequestParam String keyword) {
         return new ResponseEntity<List<Employee>>(employeeService.getEmployeeByKeyword(keyword), HttpStatus.OK);
+    }
+
+    @GetMapping("/employees/{name}/{location}")
+    public ResponseEntity<List<Employee>> getEmployeeByNameOrLocation(@PathVariable String name, @PathVariable String location) {
+        return new ResponseEntity<List<Employee>>(employeeService.getEmployeeByNameOrLocation(name, location), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/employees/delete/{name}")
+    public ResponseEntity<String> deleteEmployeeByName(@PathVariable String name) {
+        return new ResponseEntity<>(employeeService.deleteByEmployeeName(name)+"No of records deleted", HttpStatus.OK);
     }
 
 }

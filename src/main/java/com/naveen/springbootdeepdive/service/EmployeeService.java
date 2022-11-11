@@ -5,7 +5,7 @@ import com.naveen.springbootdeepdive.model.Employee;
 import java.util.List;
 
 public interface EmployeeService {
-    List<Employee> getEmployee();
+    List<Employee> getEmployee(int pageNumber, int pageSize);
 
     Employee saveEmployee(Employee employee);
 
@@ -20,5 +20,9 @@ public interface EmployeeService {
     List<Employee> getEmployeesByNameAndLocation(String name, String location);
 
     List<Employee> getEmployeeByKeyword(String keyword);
+
+    List<Employee> getEmployeeByNameOrLocation(String name, String location);
+
+    Integer deleteByEmployeeName(String name);
 
 }
