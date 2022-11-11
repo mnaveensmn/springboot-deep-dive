@@ -1,6 +1,7 @@
 package com.naveen.springbootdeepdive.controller;
 
 import com.naveen.springbootdeepdive.model.Employee;
+import com.naveen.springbootdeepdive.request.EmployeeRequest;
 import com.naveen.springbootdeepdive.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,13 +40,13 @@ public class EmployeeController {
     }
 
     @PostMapping("/employees")
-    public ResponseEntity<Employee> saveEmployee(@Valid @RequestBody Employee employee) {
-        return new ResponseEntity<>(employeeService.saveEmployee(employee), HttpStatus.CREATED);
+    public ResponseEntity<Employee> saveEmployee(@Valid @RequestBody EmployeeRequest employeeRequest) {
+        return new ResponseEntity<>(employeeService.saveEmployee(employeeRequest), HttpStatus.CREATED);
     }
 
     @PutMapping("/employees/{id}")
-    public ResponseEntity<Employee> updateEmployee(@PathVariable("id") Long id, @RequestBody Employee employee) {
-        return new ResponseEntity<>(employeeService.updateEmployee(id, employee), HttpStatus.OK);
+    public ResponseEntity<Employee> updateEmployee(@PathVariable("id") Long id, @RequestBody EmployeeRequest employeeRequest) {
+        return new ResponseEntity<>(employeeService.updateEmployee(id, employeeRequest), HttpStatus.OK);
     }
 
     @DeleteMapping("/employees/{id}")
@@ -80,7 +81,7 @@ public class EmployeeController {
 
     @DeleteMapping("/employees/delete/{name}")
     public ResponseEntity<String> deleteEmployeeByName(@PathVariable String name) {
-        return new ResponseEntity<>(employeeService.deleteByEmployeeName(name)+"No of records deleted", HttpStatus.OK);
+        return new ResponseEntity<>(employeeService.deleteByEmployeeName(name) + "No of records deleted", HttpStatus.OK);
     }
 
 }

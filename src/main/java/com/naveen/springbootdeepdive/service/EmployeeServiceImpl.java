@@ -1,7 +1,10 @@
 package com.naveen.springbootdeepdive.service;
 
+import com.naveen.springbootdeepdive.model.Department;
 import com.naveen.springbootdeepdive.model.Employee;
+import com.naveen.springbootdeepdive.repository.DepartmentRepository;
 import com.naveen.springbootdeepdive.repository.EmployeeRepository;
+import com.naveen.springbootdeepdive.request.EmployeeRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +20,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Autowired
     private EmployeeRepository repository;
 
+    @Autowired
+    private DepartmentRepository departmentRepository;
+
     @Override
     public List<Employee> getEmployee(int pageNumber, int pageSize) {
         Pageable pages = PageRequest.of(pageNumber, pageSize, Sort.Direction.DESC, "id");
@@ -24,7 +30,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Employee saveEmployee(Employee employee) {
+    public Employee saveEmployee(EmployeeRequest employeeRequest) {
+        Employee employee = new Employee(employeeRequest);
+        employee.setDepartment(getDepartment(employeeRequest.getDepartment()));
         return repository.save(employee);
     }
 
@@ -48,14 +56,14 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Employee updateEmployee(Long id, Employee employee) {
+    public Employee updateEmployee(Long id, EmployeeRequest employeeRequest) {
         Employee empToUpdate = getEmployeeById(id);
-        empToUpdate.setName(employee.getName() != null ? employee.getName() : empToUpdate.getName());
-        empToUpdate.setAge(employee.getAge() != 0 ? employee.getAge() : empToUpdate.getAge());
-        empToUpdate.setLocation(employee.getLocation() != null ? employee.getLocation() : empToUpdate.getLocation());
-        empToUpdate.setDepartment(employee.getDepartment() != null ? employee.getDepartment() : empToUpdate.getDepartment());
-        empToUpdate.setEmail(employee.getEmail() != null ? employee.getEmail() : empToUpdate.getEmail());
-        return repository.save(employee);
+        empToUpdate.setName(employeeRequest.getName() != null ? employeeRequest.getName() : empToUpdate.getName());
+        empToUpdate.setAge(employeeRequest.getAge() != 0 ? employeeRequest.getAge() : empToUpdate.getAge());
+        empToUpdate.setLocation(employeeRequest.getLocation() != null ? employeeRequest.getLocation() : empToUpdate.getLocation());
+        empToUpdate.setDepartment(employeeRequest.getDepartment() != null ? getDepartment(employeeRequest.getDepartment()) : empToUpdate.getDepartment());
+        empToUpdate.setEmail(employeeRequest.getEmail() != null ? employeeRequest.getEmail() : empToUpdate.getEmail());
+        return repository.save(empToUpdate);
     }
 
     @Override
@@ -84,5 +92,14 @@ public class EmployeeServiceImpl implements EmployeeService {
         return repository.deleteEmployeeByName(name);
     }
 
-
+    public Department getDepartment(String departmentName) {
+        Department existingDepartment = departmentRepository.findByName(departmentName);
+        if (existingDepartment == null) {
+            Department department = new Department();
+            department.setName(departmentName);
+            departmentRepository.save(department);
+            return department;
+        }
+        return existingDepartment;
+    }
 }

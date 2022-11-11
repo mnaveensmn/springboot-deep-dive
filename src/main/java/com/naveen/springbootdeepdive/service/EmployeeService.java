@@ -1,19 +1,20 @@
 package com.naveen.springbootdeepdive.service;
 
 import com.naveen.springbootdeepdive.model.Employee;
+import com.naveen.springbootdeepdive.request.EmployeeRequest;
 
 import java.util.List;
 
 public interface EmployeeService {
     List<Employee> getEmployee(int pageNumber, int pageSize);
 
-    Employee saveEmployee(Employee employee);
+    Employee saveEmployee(EmployeeRequest employeeRequest);
 
     Employee getEmployeeById(Long id);
 
     void deleteEmployee(Long id);
 
-    Employee updateEmployee(Long id, Employee employee);
+    Employee updateEmployee(Long id, EmployeeRequest employeeRequest);
 
     List<Employee> getEmployeeByName(String name);
 

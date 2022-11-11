@@ -1,7 +1,9 @@
 package com.naveen.springbootdeepdive.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.naveen.springbootdeepdive.request.EmployeeRequest;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
@@ -10,8 +12,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Setter
@@ -19,6 +19,7 @@ import java.util.Date;
 @ToString
 @Table(name = "tbl_employee")
 @Entity
+@NoArgsConstructor
 public class Employee {
 
     @Id
@@ -37,8 +38,6 @@ public class Employee {
     @Email(message = "Please provide a valid address")
     private String email;
 
-    private String department;
-
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private Date createdAt;
@@ -46,4 +45,15 @@ public class Employee {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private Date updatedAt;
+
+    @JoinColumn(name = "department_id")
+    @OneToOne
+    private Department department;
+
+    public Employee(EmployeeRequest employeeRequest) {
+        this.setName(employeeRequest.getName());
+        this.setEmail(employeeRequest.getEmail());
+        this.setAge(employeeRequest.getAge());
+        this.setLocation(employeeRequest.getLocation());
+    }
 }
