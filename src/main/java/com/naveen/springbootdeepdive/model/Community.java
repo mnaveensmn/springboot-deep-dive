@@ -6,17 +6,22 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Setter
 @Getter
 @ToString
-@Table(name = "tbl_department")
+@Table(name = "tbl_community")
 @Entity
 @NoArgsConstructor
-public class Department {
+public class Community {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
+
+    @JoinColumn(name = "employees")
+    @OneToMany
+    private List<Employee> employees;
 }

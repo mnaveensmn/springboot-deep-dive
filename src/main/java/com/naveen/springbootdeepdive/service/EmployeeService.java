@@ -6,6 +6,7 @@ import com.naveen.springbootdeepdive.request.EmployeeRequest;
 import java.util.List;
 
 public interface EmployeeService {
+
     List<Employee> getEmployee(int pageNumber, int pageSize);
 
     Employee saveEmployee(EmployeeRequest employeeRequest);
@@ -25,5 +26,7 @@ public interface EmployeeService {
     List<Employee> getEmployeeByNameOrLocation(String name, String location);
 
     Integer deleteByEmployeeName(String name);
+
+    List<Employee> getEmployeeByDepartmentName(String name);
 
 }

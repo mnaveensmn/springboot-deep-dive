@@ -1,7 +1,9 @@
 package com.naveen.springbootdeepdive.service;
 
+import com.naveen.springbootdeepdive.model.Community;
 import com.naveen.springbootdeepdive.model.Department;
 import com.naveen.springbootdeepdive.model.Employee;
+import com.naveen.springbootdeepdive.repository.CommunityRepository;
 import com.naveen.springbootdeepdive.repository.DepartmentRepository;
 import com.naveen.springbootdeepdive.repository.EmployeeRepository;
 import com.naveen.springbootdeepdive.request.EmployeeRequest;
@@ -11,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,6 +26,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Autowired
     private DepartmentRepository departmentRepository;
 
+    @Autowired
+    private CommunityRepository communityRepository;
+
     @Override
     public List<Employee> getEmployee(int pageNumber, int pageSize) {
         Pageable pages = PageRequest.of(pageNumber, pageSize, Sort.Direction.DESC, "id");
@@ -33,6 +39,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public Employee saveEmployee(EmployeeRequest employeeRequest) {
         Employee employee = new Employee(employeeRequest);
         employee.setDepartment(getDepartment(employeeRequest.getDepartment()));
+        employee.setCommunities(getCommunities(employeeRequest.getCommunities(), employee));
         return repository.save(employee);
     }
 
@@ -63,6 +70,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         empToUpdate.setLocation(employeeRequest.getLocation() != null ? employeeRequest.getLocation() : empToUpdate.getLocation());
         empToUpdate.setDepartment(employeeRequest.getDepartment() != null ? getDepartment(employeeRequest.getDepartment()) : empToUpdate.getDepartment());
         empToUpdate.setEmail(employeeRequest.getEmail() != null ? employeeRequest.getEmail() : empToUpdate.getEmail());
+        empToUpdate.setCommunities(employeeRequest.getCommunities() != null ? getCommunities(employeeRequest.getCommunities(), empToUpdate) : empToUpdate.getCommunities());
         return repository.save(empToUpdate);
     }
 
@@ -92,6 +100,12 @@ public class EmployeeServiceImpl implements EmployeeService {
         return repository.deleteEmployeeByName(name);
     }
 
+    @Override
+    public List<Employee> getEmployeeByDepartmentName(String name) {
+        return repository.getEmployeeByDeptName(name);
+        //return repository.findByDepartmentName(name);
+    }
+
     public Department getDepartment(String departmentName) {
         Department existingDepartment = departmentRepository.findByName(departmentName);
         if (existingDepartment == null) {
@@ -101,5 +115,25 @@ public class EmployeeServiceImpl implements EmployeeService {
             return department;
         }
         return existingDepartment;
+    }
+
+    public List<Community> getCommunities(List<String> names, Employee employee) {
+        List<Community> communities = new ArrayList<>();
+        for (String name : names) {
+            Community existingCommunity = communityRepository.findByName(name);
+            if (existingCommunity == null) {
+                Community community = new Community();
+                community.setName(name);
+                List<Employee> employees = new ArrayList<>();
+                employees.add(employee);
+                community.setEmployees(employees);
+                communityRepository.save(community);
+                communities.add(community);
+            } else {
+                existingCommunity.getEmployees().add(employee);
+                communities.add(existingCommunity);
+            }
+        }
+        return communities;
     }
 }

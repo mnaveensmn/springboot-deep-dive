@@ -13,6 +13,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.util.Date;
+import java.util.List;
 
 @Setter
 @Getter
@@ -49,6 +50,10 @@ public class Employee {
     @JoinColumn(name = "department_id")
     @OneToOne
     private Department department;
+
+    @JoinColumn(name = "community_ids")
+    @OneToMany
+    private List<Community> communities;
 
     public Employee(EmployeeRequest employeeRequest) {
         this.setName(employeeRequest.getName());
